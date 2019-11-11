@@ -1,4 +1,4 @@
-const postData = async (url = '', data = {}) => {
+export const postData = async (url = '', data = {}) => {
     // Default options are marked with *
     const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -15,7 +15,3 @@ const postData = async (url = '', data = {}) => {
     });
     return await response.json(); // parses JSON response into native JavaScript objects
 };
-
-module.exports = {
-    postData
-}
