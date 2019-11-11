@@ -26,11 +26,11 @@ const ViewPage = () => {
             {
                 data ?
                     <React.Fragment>
-                        <Link to="/"> Add Guest </Link> <br/>
-                        <Link to="/viewExpected"> Expected </Link> <br/>
+                        <Link to="/"> Add Guest </Link> <br />
+                        <Link to="/viewExpected"> Expected </Link> <br />
                         {/* <Link to="/extras"> Unexpected Guests </Link> <br/> */}
 
-                        <br/>
+                        <br />
 
                         <div>
                             Total Guests: {data.length}
@@ -39,6 +39,8 @@ const ViewPage = () => {
                         <ReactTable
                             data={data}
                             filterable
+                            defaultFilterMethod={(filter, row) =>
+                                String(row[filter.id]).includes(filter.value)}
                             columns={[
                                 {
                                     Header: "DB Info",
@@ -54,7 +56,9 @@ const ViewPage = () => {
                                     columns: [
                                         {
                                             Header: "Personal Number",
-                                            accessor: "guest_id"
+                                            accessor: "guest_id",
+                                            filterMethod: (filter, row) =>
+                                                row[filter.id].startsWith(filter.value)
                                         },
                                         {
                                             Header: "Name",

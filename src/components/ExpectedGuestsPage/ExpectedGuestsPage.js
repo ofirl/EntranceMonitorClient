@@ -54,12 +54,14 @@ const ViewExpectedPage = () => {
                         <br />
 
                         <div>
-                            Total Guests: {data.filter( (g) => g.arrived).length} / {data.length}
+                            Total Guests: {data.filter((g) => g.arrived).length} / {data.length}
                         </div>
 
                         <ReactTable
                             data={data}
                             filterable
+                            defaultFilterMethod={(filter, row) =>
+                                String(row[filter.id]).includes(filter.value)}
                             columns={[
                                 {
                                     Header: "DB Info",
@@ -75,7 +77,9 @@ const ViewExpectedPage = () => {
                                     columns: [
                                         {
                                             Header: "Personal Number",
-                                            accessor: "guest_id"
+                                            accessor: "guest_id",
+                                            filterMethod: (filter, row) =>
+                                                row[filter.id].startsWith(filter.value)
                                         },
                                         {
                                             Header: "Name",
@@ -88,12 +92,12 @@ const ViewExpectedPage = () => {
                                                 <span>
                                                     <span style={{
                                                         color: row.value ? '#57d500'
-                                                                : '#ff2e00',
+                                                            : '#ff2e00',
                                                     }}>
                                                         &#x25cf;
                                                   </span> {
                                                         row.value ? 'Yes'
-                                                                : 'No'
+                                                            : 'No'
                                                     }
                                                 </span>
                                             )
