@@ -15,13 +15,13 @@ import ViewExpectedPage from './components/ExpectedGuestsPage/ExpectedGuestsPage
 function App() {
   return (
     <Router>
-      <Route exact path="/">
+      <Route exact path="client/">
         <InputPage />
       </Route>
-      <Route exact path="/viewGuests">
+      <Route exact path="client/viewGuests">
         <ViewPage />
       </Route>
-      <Route exact path="/viewExpected">
+      <Route exact path="client/viewExpected">
         <ViewExpectedPage />
       </Route>
     </Router>
