@@ -98,8 +98,8 @@ const InputPage = () => {
         <React.Fragment>
             <Grid className={classes.container} columns='1fr auto 1fr' rows='1fr auto auto 1fr' areas={['nav title .', '. form hiddenSubmit', '. loader .', '. . .']}>
                 <Cell area="nav" className={classes.links}>
-                    <Link to="/viewGuests"> View Guests </Link> <br />
-                    <Link to="/viewExpected"> Expected </Link>
+                    <Link to="/client/viewGuests"> View Guests </Link> <br />
+                    <Link to="/client/viewExpected"> Expected </Link>
                 </Cell>
                 <Cell area="title">
                     Entrance Monitoring System

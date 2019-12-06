@@ -26,8 +26,8 @@ const ViewPage = () => {
             {
                 data ?
                     <React.Fragment>
-                        <Link to="/"> Add Guest </Link> <br />
-                        <Link to="/viewExpected"> Expected </Link> <br />
+                        <Link to="/client/"> Add Guest </Link> <br />
+                        <Link to="/client/viewExpected"> Expected </Link> <br />
                         {/* <Link to="/extras"> Unexpected Guests </Link> <br/> */}
 
                         <br />

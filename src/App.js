@@ -15,14 +15,21 @@ import ViewExpectedPage from './components/ExpectedGuestsPage/ExpectedGuestsPage
 function App() {
   return (
     <Router>
-      <Route exact path="client/">
+      <Route exact path="/client/">
         <InputPage />
       </Route>
-      <Route exact path="client/viewGuests">
+      <Route exact path="/client/viewGuests">
         <ViewPage />
       </Route>
-      <Route exact path="client/viewExpected">
+      <Route exact path="/client/viewExpected">
         <ViewExpectedPage />
+      </Route>
+      <Route path="/">
+        {
+          (props) => {
+            return props.location.pathname + " not found..."
+          }
+        }
       </Route>
     </Router>
     // <div className="App">
