@@ -17,7 +17,7 @@ const ViewExpectedPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (!expected) {
-                let response = await postData('https://entrance-monitor-server.herokuapp.com/allExpectedGuests');
+                let response = await postData('https://entrance-monitor.azurewebsites.net/allExpectedGuests');
                 setExpected(response.results);
             }
         };
@@ -27,16 +27,21 @@ const ViewExpectedPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (!currentGuests) {
-                let response = await postData('https://entrance-monitor-server.herokuapp.com/allGuests');
+                let response = await postData('https://entrance-monitor.azurewebsites.net/allGuests');
                 setCurrentGuests(response.results);
             }
         };
         fetchData();
     });
 
+    let temp;
     if (expected && currentGuests && !data) {
         let currentData = expected.map((g) => {
-            return { ...g, arrived: currentGuests.some((cg) => cg['guest_id'] === g['guest_id']) };
+            return {
+                ...g,
+                arrived: currentGuests.some((cg) => cg['guest_id'] === g['guest_id']),
+                arrival_time: (temp = currentGuests.find((cg) => g.guest_id === cg.guest_id)) != null ? temp.arrival_time : null,
+            };
         });
 
         setData(currentData);
@@ -87,7 +92,7 @@ const ViewExpectedPage = () => {
                                         },
                                         {
                                             Header: "Arrived",
-                                            accessor: "arrived",
+                                            accessor: "arrival_time",
                                             Cell: row => (
                                                 <span>
                                                     <span style={{
@@ -96,7 +101,7 @@ const ViewExpectedPage = () => {
                                                     }}>
                                                         &#x25cf;
                                                   </span> {
-                                                        row.value ? 'Yes'
+                                                        row.value ? 'Yes ' + new Date(row.value).toLocaleTimeString()
                                                             : 'No'
                                                     }
                                                 </span>

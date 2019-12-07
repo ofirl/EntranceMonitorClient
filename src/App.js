@@ -24,13 +24,13 @@ function App() {
       <Route exact path="/client/viewExpected">
         <ViewExpectedPage />
       </Route>
-      <Route path="/">
+      {/* <Route path="/">
         {
           (props) => {
             return props.location.pathname + " not found..."
           }
         }
-      </Route>
+      </Route> */}
     </Router>
     // <div className="App">
     //   <header className="App-header">

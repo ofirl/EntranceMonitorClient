@@ -14,7 +14,7 @@ const ViewPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (!data) {
-                let response = await postData('https://entrance-monitor-server.herokuapp.com/allGuests');
+                let response = await postData('https://entrance-monitor.azurewebsites.net/allGuests');
                 setData(response.results);
             }
         };
@@ -63,6 +63,23 @@ const ViewPage = () => {
                                         {
                                             Header: "Name",
                                             accessor: "guest_name"
+                                        },
+                                    ]
+                                },
+                                {
+                                    Header: "Arrival Info",
+                                    columns: [
+                                        {
+                                            Header: "Arrival Time",
+                                            accessor: "arrival_time",
+                                            Cell: row => (
+                                                <span>
+                                                    {
+                                                        row.value ? new Date(row.value).toLocaleTimeString()
+                                                            : null
+                                                    }
+                                                </span>
+                                            )
                                         },
                                     ]
                                 },

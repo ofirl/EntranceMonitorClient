@@ -78,7 +78,7 @@ const InputPage = () => {
         let guestIdNumber = inputRef.current.value;
         let response;
         try {
-            response = await postData('https://entrance-monitor-server.herokuapp.com/addGuest', { guestId: guestIdNumber });
+            response = await postData('https://entrance-monitor.azurewebsites.net/addGuest', { guestId: guestIdNumber });
         }
         catch (e) {
             setError(true);
