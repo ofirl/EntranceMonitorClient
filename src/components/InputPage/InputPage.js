@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { postData } from '../../utils/network';
 
@@ -10,9 +10,9 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 import { Grid, Cell } from "styled-css-grid";
 
-import {
-    Link
-} from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import Axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -58,45 +58,137 @@ const useStyles = makeStyles(theme => ({
         '& a:visited': {
             color: 'white'
         }
-    }
+    },
+    indicatorsCell: {
+        display: 'grid',
+        justifyContent: 'right',
+    },
+    link: {
+        cursor: 'pointer',
+        textDecoration: 'underline',
+    },
 }));
 
 const InputPage = () => {
     const [sending, setSending] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [offlineMode, setOfflineMode] = useState(false);
     let classes = useStyles();
+
+    useEffect(() => {
+        let initBacklog = localStorage.getItem('guestsBacklog');
+        if (initBacklog && initBacklog.length > 0)
+            sendBacklog();
+    }, []);
 
     let inputRef = React.createRef();
 
-    const addGuest = async () => {
+    const addGuest = async (data) => {
         setSending(true);
         setSuccess(false);
         setError(false);
 
         let inputElement = inputRef.current;
-        let guestIdNumber = inputRef.current.value;
-        let response;
-        try {
-            response = await postData('https://entrance-monitor.azurewebsites.net/addGuest', { guestId: guestIdNumber });
+        if (data == null)
+            data = {
+                guestId: inputRef.current.value
+            };
+
+        return Axios({
+            method: 'post',
+            url: 'https://entrance-monitor.azurewebsites.net/addGuest',
+            timeout: 5000,
+            data,
+        })
+            .then(function (response) {
+                setSending(false);
+                if (response.data == null || !response.data.success)
+                    setError(true);
+                else
+                    setSuccess(true);
+
+                inputElement.value = "";
+                if (offlineMode)
+                    setOfflineMode(false);
+
+                return response.data;
+            })
+            .catch((e) => {
+                setError(true);
+                setOfflineMode(true);
+                saveGuestToBacklog({ guestId: data.guestId });
+                inputElement.value = "";
+
+                return { success: false };
+            })
+            .finally(() => {
+                setSending(false);
+            });
+    };
+
+    const saveGuestToBacklog = (guest = {}) => {
+        // 2019-12-13 18:57:09.9575+00
+        let { guestId } = guest;
+
+        setSending(true);
+        setSuccess(false);
+        setError(false);
+
+        if (guestId == null)
+            guestId = inputRef.current.value;
+
+        let currentBacklog = JSON.parse(localStorage.getItem('guestsBacklog'));
+        if (currentBacklog == null)
+            currentBacklog = [];
+
+        if (currentBacklog.find((g) => g.guestId === guestId) == null) {
+            currentBacklog.push({
+                guestId,
+                arrival_time: new Date().toISOString(),
+            });
+
+            localStorage.setItem('guestsBacklog', JSON.stringify(currentBacklog));
         }
-        catch (e) {
-            setError(true);
-        }
+
         setSending(false);
-        if (response == null || !response.success)
-            setError(true);
+        setSuccess(true);
+        // setError(false);
+
+        if (inputRef.current)
+            inputRef.current.value = "";
+    }
+
+    const sendBacklog = () => {
+        let currentBacklog = JSON.parse(localStorage.getItem('guestsBacklog'));
+        if (currentBacklog == null)
+            return;
+
+        let requests = [];
+        currentBacklog.forEach(async (g) => {
+            requests.push(addGuest(g));
+        });
+
+        Axios.all(requests).then(Axios.spread((...responses) => {
+            if (responses.every((res) => res && res.success)) {
+                localStorage.setItem('guestsBacklog', JSON.stringify([]));
+            }
+        }));
+    }
+
+    const submitForm = (e) => {
+        if (e)
+            e.preventDefault();
+
+        if (offlineMode)
+            saveGuestToBacklog()
         else
-            setSuccess(true);
-
-        inputElement.value = "";
-
-        // console.log(response);
+            addGuest();
     };
 
     return (
         <React.Fragment>
-            <Grid className={classes.container} columns='1fr auto 1fr' rows='1fr auto auto 1fr' areas={['nav title .', '. form hiddenSubmit', '. loader .', '. . .']}>
+            <Grid className={classes.container} columns='1fr auto 1fr' rows='1fr auto auto 1fr' areas={['nav title indicators', '. form hiddenSubmit', '. loader .', '. . .']}>
                 <Cell area="nav" className={classes.links}>
                     <Link to="/client/viewGuests"> View Guests </Link> <br />
                     <Link to="/client/viewExpected"> Expected </Link>
@@ -105,7 +197,7 @@ const InputPage = () => {
                     Entrance Monitoring System
                 </Cell>
                 <Cell area="form">
-                    <form onSubmit={(e) => { e.preventDefault(); addGuest(); }}>
+                    <form onSubmit={submitForm}>
                         <TextField
                             id="outlined-required"
                             label="Guest ID"
@@ -115,11 +207,21 @@ const InputPage = () => {
                             variant="outlined"
                             inputRef={inputRef}
                             autoFocus
+                            disabled={sending}
                         />
                         {/* <input ref={inputRef} autoFocus /> */}
                     </form>
                 </Cell>
-                <Cell area="hiddenSubmit" onClick={() => addGuest()}>
+                <Cell area="indicators" className={classes.indicatorsCell}>
+                    <div>
+                        {
+                            offlineMode ? (
+                                <div> Offline, try <span onClick={sendBacklog} className={classes.link}> reconnecting </span> </div>
+                            ) : null
+                        }
+                    </div>
+                </Cell>
+                <Cell area="hiddenSubmit" onClick={submitForm}>
 
                 </Cell>
                 <Cell area="loader" className={classes.gridCellCentered}>
@@ -140,7 +242,7 @@ const InputPage = () => {
                     {
                         success ?
                             (
-                                <div style={{ color: 'lime' }}>
+                                <div style={{ color: `${offlineMode ? 'orange' : 'lime'}` }}>
                                     <CheckCircleOutlineIcon />
                                 </div>
                             )
