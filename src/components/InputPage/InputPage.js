@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import Switch from '@material-ui/core/Switch';
 
 import { Grid, Cell } from "styled-css-grid";
 
@@ -63,6 +64,11 @@ const useStyles = makeStyles(theme => ({
         display: 'grid',
         justifyContent: 'right',
     },
+    focusLockCell: {
+        display: 'grid',
+        justifyItems: 'center',
+        alignItems: 'center',
+    },
     link: {
         cursor: 'pointer',
         textDecoration: 'underline',
@@ -74,6 +80,7 @@ const InputPage = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [offlineMode, setOfflineMode] = useState(false);
+    const [focusLock, setFocusLock] = useState(true);
     let classes = useStyles();
 
     useEffect(() => {
@@ -109,6 +116,7 @@ const InputPage = () => {
                     setSuccess(true);
 
                 inputElement.value = "";
+                inputElement.focus();
                 if (offlineMode)
                     setOfflineMode(false);
 
@@ -180,15 +188,39 @@ const InputPage = () => {
         if (e)
             e.preventDefault();
 
+        if (inputRef.current && inputRef.current.value !== "") {
+            let match = inputRef.current.value.match(/\D/);
+            if (match && match.length > 0) {
+                setError(true);
+                setSuccess(false);
+                return;
+            }
+        }
+
         if (offlineMode)
             saveGuestToBacklog()
         else
             addGuest();
     };
 
+    const focusLockHandler = () => {
+        if (!focusLock)
+            return;
+
+        let inputEle = inputRef.current;
+
+        if (inputEle != null) {
+            setTimeout(() => inputEle.focus(), 1);
+            console.log('focused!');
+        }
+    };
+
+    if (focusLock)
+        setTimeout(() => focusLockHandler(), 1);
+
     return (
         <React.Fragment>
-            <Grid className={classes.container} columns='1fr auto 1fr' rows='1fr auto auto 1fr' areas={['nav title indicators', '. form hiddenSubmit', '. loader .', '. . .']}>
+            <Grid className={classes.container} columns='1fr auto 1fr' rows='1fr auto auto 1fr' areas={['nav title indicators', 'focusLock form hiddenSubmit', '. loader .', '. . .']}>
                 <Cell area="nav" className={classes.links}>
                     <Link to="/client/viewGuests"> View Guests </Link> <br />
                     <Link to="/client/viewExpected"> Expected </Link>
@@ -208,6 +240,9 @@ const InputPage = () => {
                             inputRef={inputRef}
                             autoFocus
                             disabled={sending}
+                            inputProps={{
+                                onBlur: focusLockHandler,
+                            }}
                         />
                         {/* <input ref={inputRef} autoFocus /> */}
                     </form>
@@ -220,6 +255,14 @@ const InputPage = () => {
                             ) : null
                         }
                     </div>
+                </Cell>
+                <Cell area="focusLock" className={classes.focusLockCell}>
+                    <Switch
+                        checked={focusLock}
+                        onChange={() => setFocusLock(!focusLock)}
+                        value="focusLock"
+                        color="secondary"
+                    />
                 </Cell>
                 <Cell area="hiddenSubmit" onClick={submitForm}>
 
