@@ -257,6 +257,7 @@ const InputPage = () => {
                     </div>
                 </Cell>
                 <Cell area="focusLock" className={classes.focusLockCell}>
+                    Focus lock
                     <Switch
                         checked={focusLock}
                         onChange={() => setFocusLock(!focusLock)}
