@@ -64,6 +64,14 @@ const ViewPage = () => {
                                             Header: "Name",
                                             accessor: "guest_name"
                                         },
+                                        {
+                                            Header: "Rank",
+                                            accessor: "rank"
+                                        },
+                                        {
+                                            Header: "Unit",
+                                            accessor: "unit"
+                                        },
                                     ]
                                 },
                                 {

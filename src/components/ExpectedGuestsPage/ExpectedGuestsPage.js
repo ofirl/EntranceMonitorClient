@@ -84,11 +84,19 @@ const ViewExpectedPage = () => {
                                             Header: "Personal Number",
                                             accessor: "guest_id",
                                             filterMethod: (filter, row) =>
-                                                row[filter.id].startsWith(filter.value)
+                                                String(row[filter.id]).startsWith(filter.value)
                                         },
                                         {
                                             Header: "Name",
                                             accessor: "guest_name"
+                                        },
+                                        {
+                                            Header: "Rank",
+                                            accessor: "rank"
+                                        },
+                                        {
+                                            Header: "Unit",
+                                            accessor: "unit"
                                         },
                                         {
                                             Header: "Arrived",
