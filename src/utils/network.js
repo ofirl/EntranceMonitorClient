@@ -1,4 +1,5 @@
 export const postData = async (url = '', data = {}) => {
+    console.log(data);
     // Default options are marked with *
     const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -13,5 +14,12 @@ export const postData = async (url = '', data = {}) => {
         // referrer: 'no-referrer', // no-referrer, *client
         body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
-    return await response.json(); // parses JSON response into native JavaScript objects
+    let result = {};
+    try {
+        result = await response.json(); // parses JSON response into native JavaScript objects
+    }
+    catch (e) {
+
+    }
+    return result;
 };
