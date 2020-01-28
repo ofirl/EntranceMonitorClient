@@ -5,6 +5,7 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Route,
+  Redirect,
   // Link
 } from "react-router-dom";
 
@@ -37,6 +38,9 @@ function App() {
         <InputPage />
       </Route>
       <Route exact path="/client/login">
+        {
+          verified ? (<Redirect to="/client/" />) : null
+        }
         <LoginPage verify={verifyToken} />
       </Route>
       <Route exact path="/client/viewGuests">

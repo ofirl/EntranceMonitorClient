@@ -13,7 +13,8 @@ const LoginPage = ({ verify }) => {
             login
 
             <form onSubmit={(e) => { e.preventDefault(); submit(); }}>
-                <input ref={inputRef} type="input" />
+                <input ref={inputRef} type="password" />
+                <button type="submit"> login </button>
             </form>
         </div>
     );
