@@ -117,14 +117,16 @@ const InputPage = () => {
 
                 inputElement.value = "";
                 inputElement.focus();
-                if (offlineMode)
-                    setOfflineMode(false);
+                // if (offlineMode) {
+                //     setOfflineMode(false);
+                //     setOfflineMode(true);
+                // }
 
                 return response.data;
             })
             .catch((e) => {
                 setError(true);
-                setOfflineMode(true);
+                // setOfflineMode(true);
                 saveGuestToBacklog({ guestId: data.guestId });
                 inputElement.value = "";
 
@@ -250,8 +252,8 @@ const InputPage = () => {
                 <Cell area="indicators" className={classes.indicatorsCell}>
                     <div>
                         {
-                            offlineMode ? (
-                                <div> Offline, try <span onClick={sendBacklog} className={classes.link}> reconnecting </span> </div>
+                            /*offlineMode*/ JSON.parse(localStorage.getItem('guestsBacklog')) != null && JSON.parse(localStorage.getItem('guestsBacklog')).length > 0 ? (
+                                <div style={{fontSize: '2em'}}> נתונים לא שמורים ,אנא <span onClick={sendBacklog} className={classes.link}> שלח </span> <span id="testStorage"> </span> <span onClick={() => document.getElementById('testStorage').innerHTML = localStorage.getItem('guestsBacklog')}> test </span> </div>
                             ) : null
                         }
                     </div>
