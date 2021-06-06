@@ -1,3 +1,6 @@
+export const SERVER_BASE_URL = 'https://entrance-monitor.azurewebsites.net';
+// export const SERVER_BASE_URL = 'http://localhost:5000';
+
 export const postData = async (url = '', data = {}) => {
     // Default options are marked with *
     const response = await fetch(url, {

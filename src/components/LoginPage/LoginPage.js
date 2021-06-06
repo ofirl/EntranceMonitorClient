@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
-import { postData } from '../../utils/network';
+import { postData, SERVER_BASE_URL } from '../../utils/network';
 
 const LoginPage = ({ verify }) => {
     let inputRef = useRef();
     let submit = () => {
-        postData("https://entrance-monitor.azurewebsites.net/token", { password: inputRef.current.value })
+        postData(`${SERVER_BASE_URL}/token`, { password: inputRef.current.value })
             .then(() => verify());
     };
 

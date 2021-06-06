@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { postData } from '../../utils/network';
+import { postData, SERVER_BASE_URL } from '../../utils/network';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -104,7 +104,7 @@ const InputPage = () => {
 
         return Axios({
             method: 'post',
-            url: 'https://entrance-monitor.azurewebsites.net/addGuest',
+            url: `${SERVER_BASE_URL}/addGuest`,
             timeout: 5000,
             data,
         })

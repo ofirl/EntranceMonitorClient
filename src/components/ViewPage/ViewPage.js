@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { postData } from '../../utils/network';
+import { postData, SERVER_BASE_URL } from '../../utils/network';
 
 import ReactTable from "react-table";
 import "react-table/react-table.css";
@@ -14,7 +14,7 @@ const ViewPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (!data) {
-                let response = await postData('https://entrance-monitor.azurewebsites.net/allGuests');
+                let response = await postData(`${SERVER_BASE_URL}/allGuests`);
                 setData(response.results);
             }
         };

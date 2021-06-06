@@ -13,12 +13,13 @@ import InputPage from './components/InputPage/InputPage';
 import ViewPage from './components/ViewPage/ViewPage';
 import ViewExpectedPage from './components/ExpectedGuestsPage/ExpectedGuestsPage';
 import LoginPage from './components/LoginPage/LoginPage';
+import { SERVER_BASE_URL } from './utils/network';
 
 function App() {
   const [verified, setVerified] = useState(false);
 
   let verifyToken = async () => {
-    let result = await fetch('https://entrance-monitor.azurewebsites.net/verify');
+    let result = await fetch(`${SERVER_BASE_URL}/verify`);
     if (result.status === 200)
       setVerified(true);
   };
