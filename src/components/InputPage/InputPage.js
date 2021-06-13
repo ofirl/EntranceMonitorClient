@@ -127,7 +127,7 @@ const InputPage = () => {
             .catch((e) => {
                 setError(true);
                 // setOfflineMode(true);
-                saveGuestToBacklog({ guestId: data.guestId });
+                // saveGuestToBacklog({ guestId: data.guestId });
                 inputElement.value = "";
 
                 return { success: false };
